@@ -8,12 +8,13 @@ const checkToken = require('../checkToken');
 const router = express.Router();
 
 router.get('/', (req, res) => {
+  console.log('TESRING: ' + process.env.TESTING);
   res.send('GET AUTH');
 });
 
 router.post('/register', async (req, res) => {
-  const newUser = new UserModel(req.body);
   try {
+    const newUser = new UserModel(req.body);
     await newUser.save();
     res.json(newUser);
   } catch (err) {
