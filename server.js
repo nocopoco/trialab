@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 
 //Our routes
 app.use('/api/auth', require('./routes/auth'));
-//app.use('/api/test', require('./routes/foodRoute'));
+app.use('/api/items', require('./routes/items'));
 
 ////////////
 app.listen(port, () => {
