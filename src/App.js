@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment, useEffect } from 'react';
+import axios from 'axios';
+import Container from 'react-bootstrap/Container';
 
-function App() {
+//Redux
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import AuthPage from './components/authPage/AuthPage';
+
+const App = () => {
+  useEffect(() => {
+    async function testingFunc() {
+      const testing = await axios.get('/api/items/getAll');
+      console.log(testing);
+    }
+    testingFunc();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Fragment>
+        <Container fluid="md">
+          <AuthPage />
+        </Container>
+      </Fragment>
+    </Provider>
   );
-}
+};
 
 export default App;
