@@ -14,12 +14,23 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 //Connect to mongoDB ATLAS
-mongoose.connect(config.get('connection'), {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect(config.get('connection'), {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+    });
+    console.log('MongoDB Connected....');
+  } catch (err) {
+    console.error(err.message);
+    //EXIT PROCESS WITH FAILURE
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 //Our routes
 app.use('/api/auth', require('./routes/auth'));
