@@ -26,7 +26,6 @@ router.post('/register', async (req, res) => {
       //save token in cookie
       res.cookie('authcookie', token, {
         maxAge: 1000000000,
-        httpOnly: true,
       });
       await newUser.save();
       return res.json(newUser);
