@@ -10,7 +10,8 @@ const checkToken = (req, res, next) => {
     if (err) {
       res.status(403).json(err.message);
     } else if (data.user) {
-      req.user = data.user;
+      req.id = data.id;
+      req.email = data.email;
       next();
     }
   });

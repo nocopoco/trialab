@@ -20,6 +20,10 @@ const ItemsModel = new mongoose.Schema({
       },
     },
   ],
+  DTick: {
+    type: Number,
+    required: true,
+  },
   date: {
     type: Date,
     default: Date.now(),

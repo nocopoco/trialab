@@ -1,5 +1,6 @@
 const express = require('express');
 const ItemsModel = require('../models/ItemsModel');
+const checkToken = require('../checkToken');
 
 const router = express.Router();
 
@@ -13,12 +14,9 @@ router.post('/insert-item-list', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
+router.get('/getall', checkToken, async (req, res) => {
   try {
-    const result = await ItemsModel.find({ userObj: req.body.id }).populate(
-      'userObj'
-    );
-    console.log(result);
+    const result = await ItemsModel.find({ email: req.email });
     res.json(result);
   } catch (err) {
     res.status(500).json({ msg: err.message });

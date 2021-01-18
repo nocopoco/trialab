@@ -2,8 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 const config = require('config');
+const path = require('path');
+
 const app = express();
 const port = process.env.PORT || 8888;
 
@@ -20,15 +21,21 @@ mongoose.connect(config.get('connection'), {
   useFindAndModify: false,
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello AB');
-});
-
 //Our routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/items', require('./routes/items'));
+app.use('/api/controlpanel', require('./routes/controlpanel'));
+app.use('/api/post', require('./routes/post'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/actions', require('./routes/actions'));
 
 ////////////
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
