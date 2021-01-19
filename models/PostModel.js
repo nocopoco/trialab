@@ -5,6 +5,9 @@ const PostSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
+  school: {
+    type: String,
+  },
   coverage: {
     type: String,
     required: true,

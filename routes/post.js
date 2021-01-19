@@ -16,9 +16,11 @@ router.post('/post', checkToken, async (req, res) => {
   try {
     //console.log('id', req.id);
     //console.log('body', req.body);
+    console.log(req.body);
     const postStructure = {
       userID: req.id,
       coverage: req.body.coverage,
+      school: req.body.school,
       name: req.body.name,
       text: req.body.text.content,
       date: DateTime.local()
@@ -36,9 +38,7 @@ router.post('/post', checkToken, async (req, res) => {
 
 router.get('/getallposts', async (req, res) => {
   try {
-    const posts = await PostModel.find()
-      .populate('userID')
-      .sort({ date: 'desc' });
+    const posts = await PostModel.find().sort({ date: 'desc' });
     res.json(posts);
   } catch (err) {
     res.status(500).json({ msg: err });
