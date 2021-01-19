@@ -24,7 +24,7 @@ const connectDB = async () => {
       useFindAndModify: false,
     });
     console.log('MongoDB Connected....');
-    startTicker();
+    startTicker(true);
   } catch (err) {
     console.error(err.message);
     //EXIT PROCESS WITH FAILURE
