@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const config = require('config');
 const path = require('path');
+const { startTicker } = require('./serverStuff');
 
 const app = express();
 const port = process.env.PORT || 8888;
@@ -23,6 +24,7 @@ const connectDB = async () => {
       useFindAndModify: false,
     });
     console.log('MongoDB Connected....');
+    startTicker();
   } catch (err) {
     console.error(err.message);
     //EXIT PROCESS WITH FAILURE
