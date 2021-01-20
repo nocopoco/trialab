@@ -89,6 +89,7 @@ const startTicker = (start) => {
     testFunc = setInterval(() => {
       getTime();
     }, 1000);
+    console.log('Tick Started');
   } else {
     clearInterval(testFunc);
   }
