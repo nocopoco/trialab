@@ -73,7 +73,7 @@ const getTime = () => {
     .setLocale('en-US')
     .toFormat('m');
 
-  if (now === '30' || now === '0') {
+  if (now === '30' || now === '27') {
     plusServerTicker();
   }
   //0 > x < 60

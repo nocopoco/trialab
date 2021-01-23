@@ -85,9 +85,10 @@ router.post('/buildbuildings', checkToken, async (req, res) => {
 
     user.landUsed +=
       intelDiv * 10 + armyCamp * 10 + airField * 10 + navalBase * 10;
+
+    //
     user.money -=
       intelDiv * 500 + armyCamp * 500 + airField * 500 + navalBase * 500;
-    await user.save();
     if (intelDiv > 0) {
       const build = new ActionsQueue({
         user: req.id,
@@ -102,6 +103,8 @@ router.post('/buildbuildings', checkToken, async (req, res) => {
           .setLocale(dateSetting.locale)
           .toFormat(dateSetting.format),
       });
+
+      await user.save();
       await build.save();
     }
     if (armyCamp > 0) {

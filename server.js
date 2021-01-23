@@ -41,6 +41,7 @@ app.use('/api/controlpanel', require('./routes/controlpanel'));
 app.use('/api/post', require('./routes/post'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/actions', require('./routes/actions'));
+app.use('/api/ask', require('./routes/askQuestion'));
 
 ////////////
 

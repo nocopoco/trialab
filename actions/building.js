@@ -9,7 +9,7 @@ const dateSetting = {
   localeString: DateTime.DATETIME_FULL_WITH_SECONDS,
 };
 
-const landUsages = {
+const spaceAmount = {
   intelCamp: 5,
   armyCamp: 5,
   airField: 5,
@@ -17,14 +17,24 @@ const landUsages = {
   foodBank: 5,
 };
 
+const networthBuildings = {
+  intelCamp: 100,
+  armyCamp: 100,
+  airField: 100,
+  navalBase: 100,
+};
+
 const build = async (actionData) => {
   try {
     console.log(actionData);
     const user = await UserModel.findById(actionData.user);
     if (actionData.creation.name === 'intelDept') {
+      user.networth += actionData.creation.amount * networthBuildings.intelCamp;
       user.buildings.intelligenceCamp.quantity += actionData.creation.amount;
+      user.buildings.intelligenceCamp.availableSpace +=
+        actionData.creation.amount * spaceAmount.intelCamp;
       user.buildings.intelligenceCamp.totalSpace +=
-        actionData.creation.amount * landUsages.intelCamp;
+        actionData.creation.amount * spaceAmount.intelCamp;
       user.AnDLogs.unshift({
         type: 'Building',
         from: actionData.user,
@@ -39,9 +49,12 @@ const build = async (actionData) => {
       await ActionsQueue.findByIdAndDelete(actionData._id);
     }
     if (actionData.creation.name === 'armyCamp') {
+      user.networth += actionData.creation.amount * networthBuildings.armyCamp;
       user.buildings.infantryCamp.quantity += actionData.creation.amount;
+      user.buildings.infantryCamp.availableSpace +=
+        actionData.creation.amount * spaceAmount.armyCamp;
       user.buildings.infantryCamp.totalSpace +=
-        actionData.creation.amount * landUsages.armyCamp;
+        actionData.creation.amount * spaceAmount.armyCamp;
       user.AnDLogs.unshift({
         type: 'Building',
         from: actionData.user,
@@ -56,9 +69,13 @@ const build = async (actionData) => {
       await ActionsQueue.findByIdAndDelete(actionData._id);
     }
     if (actionData.creation.name === 'airField') {
+      user.networth += actionData.creation.amount * networthBuildings.airField;
       user.buildings.airField.quantity += actionData.creation.amount;
+      user.buildings.airField.availableSpace +=
+        actionData.creation.amount * spaceAmount.airField;
+
       user.buildings.airField.totalSpace +=
-        actionData.creation.amount * landUsages.airField;
+        actionData.creation.amount * spaceAmount.airField;
       user.AnDLogs.unshift({
         type: 'Building',
         from: actionData.user,
@@ -73,9 +90,13 @@ const build = async (actionData) => {
       await ActionsQueue.findByIdAndDelete(actionData._id);
     }
     if (actionData.creation.name === 'navalBase') {
+      user.networth += actionData.creation.amount * networthBuildings.navalBase;
       user.buildings.navalBase.quantity += actionData.creation.amount;
+      user.buildings.navalBase.availableSpace +=
+        actionData.creation.amount * spaceAmount.navalBase;
+
       user.buildings.navalBase.totalSpace +=
-        actionData.creation.amount * landUsages.navalBase;
+        actionData.creation.amount * spaceAmount.navalBase;
       user.AnDLogs.unshift({
         type: 'Building',
         from: actionData.user,
