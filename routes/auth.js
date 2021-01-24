@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const array = ['@u.nus.edu', '@e.ntu.edu.sg', '@smu.edu.sg'];
+    const array = ['@u.nus.edu', '@ntu.edu.sg', '@smu.edu.sg'];
     const checkIfUserExists = await UserModel.findOne({
       email: req.body.email,
     });
