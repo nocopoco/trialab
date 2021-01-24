@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
       schol = 'National University of Singapore';
     }
 
-    if (result === '@e.ntu.edu.sg') {
+    if (result === '@ntu.edu.sg') {
       schol = 'Nanyang Technological University';
     }
     if (result === '@smu.edu.sg') {
