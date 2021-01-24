@@ -10,6 +10,8 @@ const dateSetting = {
 };
 
 const spaceAmount = {
+  homes: 5,
+  moneyGenerator: 5,
   intelCamp: 5,
   armyCamp: 5,
   airField: 5,
@@ -18,16 +20,61 @@ const spaceAmount = {
 };
 
 const networthBuildings = {
+  homes: 100,
+  moneyGenerator: 100,
   intelCamp: 100,
   armyCamp: 100,
   airField: 100,
   navalBase: 100,
 };
 
+const INCREMENTS = {
+  home: 50,
+  moneyGenerator: 1000,
+};
+
 const build = async (actionData) => {
   try {
     console.log(actionData);
     const user = await UserModel.findById(actionData.user);
+    if (actionData.creation.name === 'home') {
+      user.networth += actionData.creation.amount * networthBuildings.homes;
+      user.buildings.homes.quantity += actionData.creation.amount;
+      user.nextIncrements.population +=
+        actionData.creation.amount * INCREMENTS.home;
+      user.AnDLogs.unshift({
+        type: 'Building',
+        from: actionData.user,
+        result: 'Success',
+        description: actionData.creation.amount + ' ' + 'home(s) built.',
+        date: DateTime.local()
+          .setZone(dateSetting.timezone)
+          .setLocale(dateSetting.locale)
+          .toFormat(dateSetting.format),
+      });
+      await user.save();
+      await ActionsQueue.findByIdAndDelete(actionData._id);
+    }
+    if (actionData.creation.name === 'moneyGenerator') {
+      user.networth +=
+        actionData.creation.amount * networthBuildings.moneyGenerator;
+      user.buildings.moneyGenerator.quantity += actionData.creation.amount;
+      user.nextIncrements.money +=
+        actionData.creation.amount * INCREMENTS.moneyGenerator;
+      user.AnDLogs.unshift({
+        type: 'Building',
+        from: actionData.user,
+        result: 'Success',
+        description:
+          actionData.creation.amount + ' ' + 'money generator(s) built.',
+        date: DateTime.local()
+          .setZone(dateSetting.timezone)
+          .setLocale(dateSetting.locale)
+          .toFormat(dateSetting.format),
+      });
+      await user.save();
+      await ActionsQueue.findByIdAndDelete(actionData._id);
+    }
     if (actionData.creation.name === 'intelDept') {
       user.networth += actionData.creation.amount * networthBuildings.intelCamp;
       user.buildings.intelligenceCamp.quantity += actionData.creation.amount;

@@ -25,6 +25,34 @@ const networthUnits = {
   sea3: 45,
   sea4: 55,
 };
+const attackp = {
+  infantry1: 10,
+  infantry2: 20,
+  infantry3: 30,
+  infantry4: 40,
+  air1: 10,
+  air2: 20,
+  air3: 30,
+  air4: 40,
+  sea1: 10,
+  sea2: 20,
+  sea3: 30,
+  sea4: 40,
+};
+const defencep = {
+  infantry1: 5,
+  infantry2: 6,
+  infantry3: 7,
+  infantry4: 8,
+  air1: 5,
+  air2: 6,
+  air3: 7,
+  air4: 8,
+  sea1: 5,
+  sea2: 6,
+  sea3: 7,
+  sea4: 8,
+};
 
 const military = async (actionData) => {
   console.log(actionData);
@@ -64,8 +92,10 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'infantryOne') {
     user.networth += actionData.creation.amount * networthUnits.infantry1;
     user.infantryDivision.infantry1.quantity += actionData.creation.amount;
-    user.infantryDivision.attackPts += actionData.creation.amount * 10;
-    user.infantryDivision.defencePts += actionData.creation.amount * 5;
+    user.infantryDivision.attackPts +=
+      actionData.creation.amount * attackp.infantry1;
+    user.infantryDivision.defencePts +=
+      actionData.creation.amount * defencep.infantry1;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -82,8 +112,10 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'infantryTwo') {
     user.networth += actionData.creation.amount * networthUnits.infantry2;
     user.infantryDivision.infantry2.quantity += actionData.creation.amount;
-    user.infantryDivision.attackPts += actionData.creation.amount * 10;
-    user.infantryDivision.defencePts += actionData.creation.amount * 5;
+    user.infantryDivision.attackPts +=
+      actionData.creation.amount * attackp.infantry2;
+    user.infantryDivision.defencePts +=
+      actionData.creation.amount * defencep.infantry2;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -100,8 +132,10 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'infantryThree') {
     user.networth += actionData.creation.amount * networthUnits.infantry3;
     user.infantryDivision.infantry3.quantity += actionData.creation.amount;
-    user.infantryDivision.attackPts += actionData.creation.amount * 10;
-    user.infantryDivision.defencePts += actionData.creation.amount * 5;
+    user.infantryDivision.attackPts +=
+      actionData.creation.amount * attackp.infantry3;
+    user.infantryDivision.defencePts +=
+      actionData.creation.amount * defencep.infantry3;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -118,8 +152,10 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'infantryFour') {
     user.networth += actionData.creation.amount * networthUnits.infantry4;
     user.infantryDivision.infantry4.quantity += actionData.creation.amount;
-    user.infantryDivision.attackPts += actionData.creation.amount * 10;
-    user.infantryDivision.defencePts += actionData.creation.amount * 5;
+    user.infantryDivision.attackPts +=
+      actionData.creation.amount * attackp.infantry4;
+    user.infantryDivision.defencePts +=
+      actionData.creation.amount * defencep.infantry4;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -137,8 +173,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'airOne') {
     user.networth += actionData.creation.amount * networthUnits.air1;
     user.airDivision.air1.quantity += actionData.creation.amount;
-    user.airDivision.attackPts += actionData.creation.amount * 10;
-    user.airDivision.defencePts += actionData.creation.amount * 5;
+    user.airDivision.attackPts += actionData.creation.amount * attackp.air1;
+    user.airDivision.defencePts += actionData.creation.amount * defencep.air1;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -155,8 +191,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'airTwo') {
     user.networth += actionData.creation.amount * networthUnits.air2;
     user.airDivision.air2.quantity += actionData.creation.amount;
-    user.airDivision.attackPts += actionData.creation.amount * 10;
-    user.airDivision.defencePts += actionData.creation.amount * 5;
+    user.airDivision.attackPts += actionData.creation.amount * attackp.air2;
+    user.airDivision.defencePts += actionData.creation.amount * defencep.air2;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -173,8 +209,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'airThree') {
     user.networth += actionData.creation.amount * networthUnits.air3;
     user.airDivision.air3.quantity += actionData.creation.amount;
-    user.airDivision.attackPts += actionData.creation.amount * 10;
-    user.airDivision.defencePts += actionData.creation.amount * 5;
+    user.airDivision.attackPts += actionData.creation.amount * attackp.air3;
+    user.airDivision.defencePts += actionData.creation.amount * defencep.air3;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -191,8 +227,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'airFour') {
     user.networth += actionData.creation.amount * networthUnits.air4;
     user.airDivision.air4.quantity += actionData.creation.amount;
-    user.airDivision.attackPts += actionData.creation.amount * 10;
-    user.airDivision.defencePts += actionData.creation.amount * 5;
+    user.airDivision.attackPts += actionData.creation.amount * attackp.air4;
+    user.airDivision.defencePts += actionData.creation.amount * defencep.air4;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -210,8 +246,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'seaOne') {
     user.networth += actionData.creation.amount * networthUnits.sea1;
     user.seaDivision.sea1.quantity += actionData.creation.amount;
-    user.seaDivision.attackPts += actionData.creation.amount * 10;
-    user.seaDivision.defencePts += actionData.creation.amount * 5;
+    user.seaDivision.attackPts += actionData.creation.amount * attackp.sea1;
+    user.seaDivision.defencePts += actionData.creation.amount * defencep.sea1;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -228,8 +264,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'seaTwo') {
     user.networth += actionData.creation.amount * networthUnits.sea2;
     user.seaDivision.sea2.quantity += actionData.creation.amount;
-    user.seaDivision.attackPts += actionData.creation.amount * 10;
-    user.seaDivision.defencePts += actionData.creation.amount * 5;
+    user.seaDivision.attackPts += actionData.creation.amount * attackp.sea2;
+    user.seaDivision.defencePts += actionData.creation.amount * defencep.sea2;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -246,8 +282,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'seaThree') {
     user.networth += actionData.creation.amount * networthUnits.sea3;
     user.seaDivision.sea3.quantity += actionData.creation.amount;
-    user.seaDivision.attackPts += actionData.creation.amount * 10;
-    user.seaDivision.defencePts += actionData.creation.amount * 5;
+    user.seaDivision.attackPts += actionData.creation.amount * attackp.sea3;
+    user.seaDivision.defencePts += actionData.creation.amount * defencep.sea3;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,
@@ -264,8 +300,8 @@ const military = async (actionData) => {
   if (actionData.creation.name === 'seaFour') {
     user.networth += actionData.creation.amount * networthUnits.sea4;
     user.seaDivision.sea4.quantity += actionData.creation.amount;
-    user.seaDivision.attackPts += actionData.creation.amount * 10;
-    user.seaDivision.defencePts += actionData.creation.amount * 5;
+    user.seaDivision.attackPts += actionData.creation.amount * attackp.sea4;
+    user.seaDivision.defencePts += actionData.creation.amount * defencep.sea4;
     user.AnDLogs.unshift({
       type: 'Military',
       from: actionData.user,

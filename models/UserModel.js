@@ -123,7 +123,7 @@ const UserSchema = new mongoose.Schema({
   nextIncrements: {
     money: {
       type: Number,
-      default: 0,
+      default: 1000,
     },
     population: {
       type: Number,
@@ -133,12 +133,20 @@ const UserSchema = new mongoose.Schema({
       type: Number,
       default: 0,
     },
-    land: {
-      type: Number,
-      default: 0,
-    },
   },
   buildings: {
+    homes: {
+      quantity: {
+        type: Number,
+        default: 0,
+      },
+    },
+    moneyGenerator: {
+      quantity: {
+        type: Number,
+        default: 0,
+      },
+    },
     intelligenceCamp: {
       quantity: {
         type: Number,
@@ -280,8 +288,7 @@ const UserSchema = new mongoose.Schema({
           ref: 'user',
         },
         date: {
-          type: Date,
-          default: Date.now,
+          type: String,
         },
       },
     ],

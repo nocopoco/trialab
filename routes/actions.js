@@ -64,12 +64,26 @@ router.get('/getexploringtasks', checkToken, async (req, res) => {
 router.post('/buildbuildings', checkToken, async (req, res) => {
   try {
     const user = await UserModel.findById(req.id);
-    const { intelDiv, armyCamp, airField, navalBase } = req.body;
+    const {
+      homes,
+      moneyGenerator,
+      intelDiv,
+      armyCamp,
+      airField,
+      navalBase,
+    } = req.body;
     const checkForEnufMoney =
-      intelDiv * 500 + armyCamp * 500 + airField * 500 + navalBase * 500 <=
+      homes * 500 +
+        moneyGenerator * 500 +
+        intelDiv * 500 +
+        armyCamp * 500 +
+        airField * 500 +
+        navalBase * 500 <=
       user.money;
     const checkForEnufLand =
-      intelDiv * 10 +
+      homes * 10 +
+        moneyGenerator * 10 +
+        intelDiv * 10 +
         armyCamp * 10 +
         airField * 10 +
         navalBase * 10 +
@@ -84,11 +98,55 @@ router.post('/buildbuildings', checkToken, async (req, res) => {
     }
 
     user.landUsed +=
-      intelDiv * 10 + armyCamp * 10 + airField * 10 + navalBase * 10;
+      homes * 10 +
+      moneyGenerator * 10 +
+      intelDiv * 10 +
+      armyCamp * 10 +
+      airField * 10 +
+      navalBase * 10;
 
     //
     user.money -=
-      intelDiv * 500 + armyCamp * 500 + airField * 500 + navalBase * 500;
+      homes * 500 +
+      moneyGenerator * 500 +
+      intelDiv * 500 +
+      armyCamp * 500 +
+      airField * 500 +
+      navalBase * 500;
+    if (homes > 0) {
+      const build = new ActionsQueue({
+        user: req.id,
+        type: 'building',
+        doneInWhatTick: 1,
+        creation: {
+          name: 'home',
+          amount: homes,
+        },
+        date: DateTime.local()
+          .setZone(dateSetting.timezone)
+          .setLocale(dateSetting.locale)
+          .toFormat(dateSetting.format),
+      });
+      await user.save();
+      await build.save();
+    }
+    if (moneyGenerator > 0) {
+      const build = new ActionsQueue({
+        user: req.id,
+        type: 'building',
+        doneInWhatTick: 1,
+        creation: {
+          name: 'moneyGenerator',
+          amount: moneyGenerator,
+        },
+        date: DateTime.local()
+          .setZone(dateSetting.timezone)
+          .setLocale(dateSetting.locale)
+          .toFormat(dateSetting.format),
+      });
+      await user.save();
+      await build.save();
+    }
     if (intelDiv > 0) {
       const build = new ActionsQueue({
         user: req.id,
@@ -219,17 +277,17 @@ router.post('/createmilitary', checkToken, async (req, res) => {
       intelligenceDiv.recon * 100 +
         intelligenceDiv.commando * 100 +
         infantryDiv.infantryOne * 100 +
-        infantryDiv.infantryTwo * 100 +
-        infantryDiv.infantryThree * 100 +
-        infantryDiv.infantryFour * 100 +
+        infantryDiv.infantryTwo * 200 +
+        infantryDiv.infantryThree * 300 +
+        infantryDiv.infantryFour * 400 +
         airDiv.airOne * 100 +
-        airDiv.airTwo * 100 +
-        airDiv.airThree * 100 +
-        airDiv.airFour * 100 +
+        airDiv.airTwo * 200 +
+        airDiv.airThree * 300 +
+        airDiv.airFour * 400 +
         navalDiv.seaOne * 100 +
-        navalDiv.seaTwo * 100 +
-        navalDiv.seaThree * 100 +
-        navalDiv.seaFour * 100 <=
+        navalDiv.seaTwo * 200 +
+        navalDiv.seaThree * 300 +
+        navalDiv.seaFour * 400 <=
       user.money;
     if (!checkifenufmoney) {
       return res.status(500).json({ msg: 'Not enough money.' });
@@ -237,6 +295,8 @@ router.post('/createmilitary', checkToken, async (req, res) => {
     const intel = Object.entries(intelligenceDiv);
     for (i = 0; i < intel.length; i++) {
       if (intel[i][1] > 0) {
+        user.buildings.intelligenceCamp.usedSpace += intel[i][1] * 1;
+        user.buildings.intelligenceCamp.availableSpace -= intel[i][1] * 1;
         const build = new ActionsQueue({
           user: req.id,
           type: 'military',
@@ -258,6 +318,8 @@ router.post('/createmilitary', checkToken, async (req, res) => {
     for (i = 0; i < infantry.length; i++) {
       if (infantry[i][1] > 0) {
         infantryPwr += infantry[i][1] * 500;
+        user.buildings.infantryCamp.usedSpace += infantry[i][1] * 1;
+        user.buildings.infantryCamp.availableSpace -= infantry[i][1] * 1;
         const build = new ActionsQueue({
           user: req.id,
           type: 'military',
@@ -280,6 +342,8 @@ router.post('/createmilitary', checkToken, async (req, res) => {
     for (i = 0; i < air.length; i++) {
       if (air[i][1] > 0) {
         airPwr += air[i][1] * 500;
+        user.buildings.airField.usedSpace += air[i][1] * 1;
+        user.buildings.airField.availableSpace -= air[i][1] * 1;
         const build = new ActionsQueue({
           user: req.id,
           type: 'military',
@@ -301,6 +365,8 @@ router.post('/createmilitary', checkToken, async (req, res) => {
     for (i = 0; i < air.length; i++) {
       if (naval[i][1] > 0) {
         navalPwr += naval[i][1] * 500;
+        user.buildings.navalBase.usedSpace += naval[i][1] * 1;
+        user.buildings.navalBase.availableSpace -= naval[i][1] * 1;
         const build = new ActionsQueue({
           user: req.id,
           type: 'military',
@@ -321,17 +387,17 @@ router.post('/createmilitary', checkToken, async (req, res) => {
       intelligenceDiv.recon * 100 +
       intelligenceDiv.commando * 100 +
       infantryDiv.infantryOne * 100 +
-      infantryDiv.infantryTwo * 100 +
-      infantryDiv.infantryThree * 100 +
-      infantryDiv.infantryFour * 100 +
+      infantryDiv.infantryTwo * 200 +
+      infantryDiv.infantryThree * 300 +
+      infantryDiv.infantryFour * 400 +
       airDiv.airOne * 100 +
-      airDiv.airTwo * 100 +
-      airDiv.airThree * 100 +
-      airDiv.airFour * 100 +
+      airDiv.airTwo * 200 +
+      airDiv.airThree * 300 +
+      airDiv.airFour * 400 +
       navalDiv.seaOne * 100 +
-      navalDiv.seaTwo * 100 +
-      navalDiv.seaThree * 100 +
-      navalDiv.seaFour * 100;
+      navalDiv.seaTwo * 200 +
+      navalDiv.seaThree * 300 +
+      navalDiv.seaFour * 400;
     await user.save();
 
     res.json('ok');
@@ -354,6 +420,48 @@ router.get('/getmilitarytasks', checkToken, async (req, res) => {
 
 router.post('/attack', checkToken, async (req, res) => {
   try {
+    const cost = {
+      infantry1: 500,
+      infantry2: 600,
+      infantry3: 700,
+      infantry4: 800,
+      air1: 500,
+      air2: 600,
+      air3: 700,
+      air4: 800,
+      sea1: 500,
+      sea2: 600,
+      sea3: 700,
+      sea4: 800,
+    };
+    const attackp = {
+      infantry1: 10,
+      infantry2: 20,
+      infantry3: 30,
+      infantry4: 40,
+      air1: 10,
+      air2: 20,
+      air3: 30,
+      air4: 40,
+      sea1: 10,
+      sea2: 20,
+      sea3: 30,
+      sea4: 40,
+    };
+    const defencep = {
+      infantry1: 5,
+      infantry2: 6,
+      infantry3: 7,
+      infantry4: 8,
+      air1: 5,
+      air2: 6,
+      air3: 7,
+      air4: 8,
+      sea1: 5,
+      sea2: 6,
+      sea3: 7,
+      sea4: 8,
+    };
     let forces = [];
     let totalAttackPts = 0;
     let totalCost = 0;
@@ -459,8 +567,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: infantryDiv.infantryOne,
       });
       user.infantryDivision.infantry1.quantity -= infantryDiv.infantryOne;
-      totalAttackPts += infantryDiv.infantryOne * 10;
-      totalCost += infantryDiv.infantryOne * 500;
+      totalAttackPts += infantryDiv.infantryOne * attackp.infantry1;
+      totalCost += infantryDiv.infantryOne * cost.infantry1;
     }
     if (infantryDiv.infantryTwo > 0) {
       forces.push({
@@ -469,8 +577,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: infantryDiv.infantryTwo,
       });
       user.infantryDivision.infantry2.quantity -= infantryDiv.infantryTwo;
-      totalAttackPts += infantryDiv.infantryTwo * 20;
-      totalCost += infantryDiv.infantryTwo * 500;
+      totalAttackPts += infantryDiv.infantryTwo * attackp.infantry2;
+      totalCost += infantryDiv.infantryTwo * cost.infantry2;
     }
     if (infantryDiv.infantryThree > 0) {
       forces.push({
@@ -479,8 +587,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: infantryDiv.infantryThree,
       });
       user.infantryDivision.infantry3.quantity -= infantryDiv.infantryThree;
-      totalAttackPts += infantryDiv.infantryThree * 30;
-      totalCost += infantryDiv.infantryThree * 500;
+      totalAttackPts += infantryDiv.infantryThree * attackp.infantry3;
+      totalCost += infantryDiv.infantryThree * cost.infantry3;
     }
     if (infantryDiv.infantryFour > 0) {
       forces.push({
@@ -489,8 +597,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: infantryDiv.infantryFour,
       });
       user.infantryDivision.infantry4.quantity -= infantryDiv.infantryFour;
-      totalAttackPts += infantryDiv.infantryFour * 40;
-      totalCost += infantryDiv.infantryFour * 500;
+      totalAttackPts += infantryDiv.infantryFour * attackp.infantry4;
+      totalCost += infantryDiv.infantryFour * cost.infantry4;
     }
 
     if (airDiv.airOne > 0) {
@@ -500,8 +608,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: airDiv.airOne,
       });
       user.airDivision.air1.quantity -= airDiv.airOne;
-      totalAttackPts += airDiv.airOne * 10;
-      totalCost += airDiv.airOne * 500;
+      totalAttackPts += airDiv.airOne * attackp.air1;
+      totalCost += airDiv.airOne * cost.air1;
     }
     if (airDiv.airTwo > 0) {
       forces.push({
@@ -510,8 +618,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: airDiv.airTwo,
       });
       user.airDivision.air2.quantity -= airDiv.airTwo;
-      totalAttackPts += airDiv.airTwo * 20;
-      totalCost += airDiv.airTwo * 500;
+      totalAttackPts += airDiv.airTwo * attackp.air2;
+      totalCost += airDiv.airTwo * cost.air2;
     }
     if (airDiv.airThree > 0) {
       forces.push({
@@ -520,8 +628,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: airDiv.airThree,
       });
       user.airDivision.air3.quantity -= airDiv.airThree;
-      totalAttackPts += airDiv.airThree * 30;
-      totalCost += airDiv.airTwo * 500;
+      totalAttackPts += airDiv.airThree * attackp.air3;
+      totalCost += airDiv.airTwo * cost.air3;
     }
     if (airDiv.airFour > 0) {
       forces.push({
@@ -530,8 +638,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: airDiv.airFour,
       });
       user.airDivision.air4.quantity -= airDiv.airFour;
-      totalAttackPts += airDiv.airFour * 40;
-      totalCost += airDiv.airFour * 500;
+      totalAttackPts += airDiv.airFour * attackp.air4;
+      totalCost += airDiv.airFour * cost.air4;
     }
 
     if (navalDiv.seaOne > 0) {
@@ -541,8 +649,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: navalDiv.seaOne,
       });
       user.seaDivision.sea1.quantity -= navalDiv.seaOne;
-      totalAttackPts += navalDiv.seaOne * 10;
-      totalCost += navalDiv.seaOne * 500;
+      totalAttackPts += navalDiv.seaOne * attackp.sea1;
+      totalCost += navalDiv.seaOne * cost.sea1;
     }
     if (navalDiv.seaTwo > 0) {
       forces.push({
@@ -551,8 +659,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: navalDiv.seaTwo,
       });
       user.seaDivision.sea2.quantity -= navalDiv.seaTwo;
-      totalAttackPts += navalDiv.seaTwo * 20;
-      totalCost += navalDiv.seaTwo * 500;
+      totalAttackPts += navalDiv.seaTwo * attackp.sea2;
+      totalCost += navalDiv.seaTwo * cost.sea2;
     }
     if (navalDiv.seaThree > 0) {
       forces.push({
@@ -561,8 +669,8 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: navalDiv.seaThree,
       });
       user.seaDivision.sea3.quantity -= navalDiv.seaThree;
-      totalAttackPts += navalDiv.seaThree * 30;
-      totalCost += navalDiv.seaThree * 500;
+      totalAttackPts += navalDiv.seaThree * attackp.sea3;
+      totalCost += navalDiv.seaThree * cost.sea3;
     }
     if (navalDiv.seaFour > 0) {
       forces.push({
@@ -571,25 +679,40 @@ router.post('/attack', checkToken, async (req, res) => {
         amount: navalDiv.seaFour,
       });
       user.seaDivision.sea4.quantity -= navalDiv.seaFour;
-      totalAttackPts += navalDiv.seaFour * 40;
-      totalCost += navalDiv.seaFour * 500;
+      totalAttackPts += navalDiv.seaFour * attackp.sea4;
+      totalCost += navalDiv.seaFour * cost.sea4;
     }
 
     user.infantryDivision.attackPts =
-      user.infantryDivision.infantry1.quantity * 10 +
-      user.infantryDivision.infantry2.quantity * 20 +
-      user.infantryDivision.infantry3.quantity * 30 +
-      user.infantryDivision.infantry4.quantity * 40;
+      user.infantryDivision.infantry1.quantity * attackp.infantry1 +
+      user.infantryDivision.infantry2.quantity * attackp.infantry2 +
+      user.infantryDivision.infantry3.quantity * attackp.infantry3 +
+      user.infantryDivision.infantry4.quantity * attackp.infantry4;
+    user.infantryDivision.defencePts =
+      user.infantryDivision.infantry1.quantity * defencep.infantry1 +
+      user.infantryDivision.infantry2.quantity * defencep.infantry2 +
+      user.infantryDivision.infantry3.quantity * defencep.infantry3 +
+      user.infantryDivision.infantry4.quantity * defencep.infantry4;
     user.airDivision.attackPts =
-      user.airDivision.air1.quantity * 10 +
-      user.airDivision.air2.quantity * 20 +
-      user.airDivision.air3.quantity * 30 +
-      user.airDivision.air4.quantity * 40;
+      user.airDivision.air1.quantity * attackp.air1 +
+      user.airDivision.air2.quantity * attackp.air2 +
+      user.airDivision.air3.quantity * attackp.air3 +
+      user.airDivision.air4.quantity * attackp.air4;
+    user.airDivision.defencePts =
+      user.airDivision.air1.quantity * defencep.air1 +
+      user.airDivision.air2.quantity * defencep.air2 +
+      user.airDivision.air3.quantity * defencep.air3 +
+      user.airDivision.air4.quantity * defencep.air4;
     user.seaDivision.attackPts =
-      user.seaDivision.sea1.quantity * 10 +
-      user.seaDivision.sea2.quantity * 20 +
-      user.seaDivision.sea3.quantity * 30 +
-      user.seaDivision.sea4.quantity * 40;
+      user.seaDivision.sea1.quantity * attackp.sea1 +
+      user.seaDivision.sea2.quantity * attackp.sea2 +
+      user.seaDivision.sea3.quantity * attackp.sea3 +
+      user.seaDivision.sea4.quantity * attackp.sea4;
+    user.seaDivision.defencePts =
+      user.seaDivision.sea1.quantity * defencep.sea1 +
+      user.seaDivision.sea2.quantity * defencep.sea2 +
+      user.seaDivision.sea3.quantity * defencep.sea3 +
+      user.seaDivision.sea4.quantity * defencep.sea4;
 
     /*const targetTotalDefencePts =
       userTarget.infantryDivision.defencePts +
@@ -692,4 +815,62 @@ router.get('/getintelreports', checkToken, async (req, res) => {
   }
 });
 
+router.post('/sendcommandos', checkToken, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.id);
+    const checkifenufcommandos =
+      req.body.commando <= user.intelligenceDivision.commandos;
+    if (!checkifenufcommandos) {
+      return res.status(500).json({ msg: 'You dont have that many units.' });
+    }
+    user.intelligenceDivision.commandos -= req.body.commando;
+    const action = new ActionsQueue({
+      user: req.id,
+      type: 'sabotage',
+      doneInWhatTick: 1,
+      target: req.body.target,
+      forces: [
+        {
+          name: 'commando',
+          type: 'sabotage',
+          amount: req.body.commando,
+        },
+      ],
+      date: DateTime.local()
+        .setZone(dateSetting.timezone)
+        .setLocale(dateSetting.locale)
+        .toFormat(dateSetting.format),
+    });
+    await user.save();
+    await action.save();
+    res.json('ok');
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
+router.get('/getsabotagetasks', checkToken, async (req, res) => {
+  try {
+    const tasks = await ActionsQueue.find({
+      user: req.id,
+      type: 'sabotage',
+    })
+      .populate('target')
+      .sort({ date: 'desc' });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
+router.get('/getsabotagemissions', checkToken, async (req, res) => {
+  try {
+    const missions = await UserModel.find({
+      _id: req.id,
+    }).populate('intelligenceDivision.sabotages.target');
+    res.json(missions);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
 module.exports = router;

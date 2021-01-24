@@ -40,14 +40,19 @@ const intel = async (actionData) => {
           .toFormat(dateSetting.format),
       });
       user.intelligenceDivision.recons += Math.ceil(
-        actionData.forces[0].amount * 0.9
+        actionData.forces[0].amount * 0.95
       );
+      user.networth -= Math.ceil(actionData.forces[0].amount * 0.05) * 50;
       user.AnDLogs.unshift({
         type: 'Recon',
         result: 'Success',
         from: actionData.user,
         description:
-          'Check Intelligence Page for intel on ' + target.name + ' .',
+          'Lost ' +
+          Math.ceil(actionData.forces[0].amount * 0.05) +
+          'units. Check Intelligence Page for intel on ' +
+          target.name +
+          ' .',
         date: DateTime.local()
           .setZone(dateSetting.timezone)
           .setLocale(dateSetting.locale)
@@ -65,15 +70,22 @@ const intel = async (actionData) => {
       });
       await user.save();
       await target.save();
+      await ActionsQueue.findByIdAndDelete(actionData._id);
     } else {
       user.intelligenceDivision.recons += Math.ceil(
         actionData.forces[0].amount * 0.5
       );
+      user.networth -= Math.ceil(actionData.forces[0].amount * 0.5) * 50;
       user.AnDLogs.unshift({
         type: 'Recon',
         result: 'Lost',
         from: actionData.user,
-        description: 'Failed to scan ' + target.name + ' .',
+        description:
+          'Lost ' +
+          Math.ceil(actionData.forces[0].amount * 0.5) +
+          ' units. Failed to scan ' +
+          target.name +
+          ' .',
         date: DateTime.local()
           .setZone(dateSetting.timezone)
           .setLocale(dateSetting.locale)
@@ -91,8 +103,8 @@ const intel = async (actionData) => {
       });
       await user.save();
       await target.save();
+      await ActionsQueue.findByIdAndDelete(actionData._id);
     }
-    await ActionsQueue.findByIdAndDelete(actionData._id);
   } catch (err) {
     return err;
   }

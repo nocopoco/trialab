@@ -17,6 +17,7 @@ const explore = async (actionData) => {
     const user = await UserModel.findById(actionData.user);
     const landGained = actionData.creation.amount * LAND_INCREMENTS_PER_UNIT;
     user.land = user.land + landGained;
+    user.population += actionData.creation.amount;
     user.AnDLogs.unshift({
       type: 'Explore',
       from: actionData.user,

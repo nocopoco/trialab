@@ -10,13 +10,40 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
+    const array = ['@u.nus.edu', '@e.ntu.edu.sg', '@smu.edu.sg'];
     const checkIfUserExists = await UserModel.findOne({
       email: req.body.email,
     });
+    const index = req.body.email.indexOf('@');
+    const result = req.body.email.slice(index);
+    let schol = '';
+
+    const findSchool = array.find((element) => element === result);
+    if (findSchool === undefined) {
+      return res.status(500).json({ msg: 'Only NUS,NTU and SMU for now.' });
+    }
+
+    if (result === '@u.nus.edu') {
+      schol = 'National University of Singapore';
+    }
+
+    if (result === '@e.ntu.edu.sg') {
+      schol = 'Nanyang Technological University';
+    }
+    if (result === '@smu.edu.sg') {
+      schol = 'Singapore Management University';
+    }
+
+    //result != '@e.ntu.edu.sg' ||
+    //result != '@smu.edu.sg'
     if (!checkIfUserExists) {
       const newUser = new UserModel(req.body);
       const passwordHash = bcrypt.hashSync(req.body.password, 10);
       newUser.password = passwordHash;
+      newUser.name = req.body.name;
+      newUser.email = req.body.email;
+      newUser.school = schol;
+      newUser.country = 'Singapore';
       console.log(newUser);
       //create JWT token
       const token = jwt.sign(
@@ -31,7 +58,8 @@ router.post('/register', async (req, res) => {
       await newUser.save();
       return res.json(newUser);
     }
-    res.status(500).json({ email: 'Email exists' });
+
+    res.status(500).json({ msg: 'Email exists' });
   } catch (err) {
     res.status(500).json(err);
   }

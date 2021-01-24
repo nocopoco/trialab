@@ -9,6 +9,35 @@ const dateSetting = {
   localeString: DateTime.DATETIME_FULL_WITH_SECONDS,
 };
 
+const attackp = {
+  infantry1: 10,
+  infantry2: 20,
+  infantry3: 30,
+  infantry4: 40,
+  air1: 10,
+  air2: 20,
+  air3: 30,
+  air4: 40,
+  sea1: 10,
+  sea2: 20,
+  sea3: 30,
+  sea4: 40,
+};
+const defencep = {
+  infantry1: 5,
+  infantry2: 6,
+  infantry3: 7,
+  infantry4: 8,
+  air1: 5,
+  air2: 6,
+  air3: 7,
+  air4: 8,
+  sea1: 5,
+  sea2: 6,
+  sea3: 7,
+  sea4: 8,
+};
+
 const networthUnits = {
   recons: 50,
   commando: 50,
@@ -26,7 +55,7 @@ const networthUnits = {
   sea4: 55,
 };
 
-//If attack succeeds => destroy 5%  of land, and military. You will lose 1% of your units sent.
+//If attack succeeds => destroy 5%  of land, and military. You will gain 5% of the land, lose 1% of your units sent.
 //if attack fails => destory 1% military. You will lose 5% of your units sent.
 
 const attack = async (actionData) => {
@@ -86,40 +115,42 @@ const attack = async (actionData) => {
       );
 
       target.infantryDivision.attackPts =
-        target.infantryDivision.infantry1.quantity * 10 +
-        target.infantryDivision.infantry2.quantity * 10 +
-        target.infantryDivision.infantry3.quantity * 10 +
-        target.infantryDivision.infantry4.quantity * 10;
+        target.infantryDivision.infantry1.quantity * attackp.infantry1 +
+        target.infantryDivision.infantry2.quantity * attackp.infantry2 +
+        target.infantryDivision.infantry3.quantity * attackp.infantry3 +
+        target.infantryDivision.infantry4.quantity * attackp.infantry3;
       target.infantryDivision.defencePts =
-        target.infantryDivision.infantry1.quantity * 5 +
-        target.infantryDivision.infantry2.quantity * 5 +
-        target.infantryDivision.infantry3.quantity * 5 +
-        target.infantryDivision.infantry4.quantity * 5;
+        target.infantryDivision.infantry1.quantity * defencep.infantry1 +
+        target.infantryDivision.infantry2.quantity * defencep.infantry2 +
+        target.infantryDivision.infantry3.quantity * defencep.infantry3 +
+        target.infantryDivision.infantry4.quantity * defencep.infantry4;
 
       target.airDivision.attackPts =
-        target.airDivision.air1.quantity * 10 +
-        target.airDivision.air2.quantity * 10 +
-        target.airDivision.air3.quantity * 10 +
-        target.airDivision.air4.quantity * 10;
+        target.airDivision.air1.quantity * attackp.air1 +
+        target.airDivision.air2.quantity * attackp.air2 +
+        target.airDivision.air3.quantity * attackp.air3 +
+        target.airDivision.air4.quantity * attackp.air4;
       target.airDivision.defencePts =
-        target.airDivision.air1.quantity * 5 +
-        target.airDivision.air2.quantity * 5 +
-        target.airDivision.air3.quantity * 5 +
-        target.airDivision.air4.quantity * 5;
+        target.airDivision.air1.quantity * defencep.air1 +
+        target.airDivision.air2.quantity * defencep.air2 +
+        target.airDivision.air3.quantity * defencep.air3 +
+        target.airDivision.air4.quantity * defencep.air4;
 
       target.seaDivision.attackPts =
-        target.seaDivision.sea1.quantity * 10 +
-        target.seaDivision.sea2.quantity * 10 +
-        target.seaDivision.sea3.quantity * 10 +
-        target.seaDivision.sea4.quantity * 10;
+        target.seaDivision.sea1.quantity * attackp.sea1 +
+        target.seaDivision.sea2.quantity * attackp.sea2 +
+        target.seaDivision.sea3.quantity * attackp.sea3 +
+        target.seaDivision.sea4.quantity * attackp.sea4;
       target.seaDivision.defencePts =
-        target.seaDivision.sea1.quantity * 5 +
-        target.seaDivision.sea2.quantity * 5 +
-        target.seaDivision.sea3.quantity * 5 +
-        target.seaDivision.sea4.quantity * 5;
+        target.seaDivision.sea1.quantity * defencep.sea1 +
+        target.seaDivision.sea2.quantity * defencep.sea2 +
+        target.seaDivision.sea3.quantity * defencep.sea3 +
+        target.seaDivision.sea4.quantity * defencep.sea4;
 
       target.networth =
         1000 +
+        target.buildings.homes * 100 +
+        target.buidlings.moneyGenerator * 100 +
         target.buildings.intelligenceCamp.quantity * 100 +
         target.buildings.infantryCamp.quantity * 100 +
         target.buildings.airField.quantity * 100 +
@@ -215,42 +246,44 @@ const attack = async (actionData) => {
 
       ///
       user.infantryDivision.attackPts =
-        user.infantryDivision.infantry1.quantity * 10 +
-        user.infantryDivision.infantry2.quantity * 10 +
-        user.infantryDivision.infantry3.quantity * 10 +
-        user.infantryDivision.infantry4.quantity * 10;
+        user.infantryDivision.infantry1.quantity * attackp.infantry1 +
+        user.infantryDivision.infantry2.quantity * attackp.infantry2 +
+        user.infantryDivision.infantry3.quantity * attackp.infantry3 +
+        user.infantryDivision.infantry4.quantity * attackp.infantry4;
       user.infantryDivision.defencePts =
-        user.infantryDivision.infantry1.quantity * 5 +
-        user.infantryDivision.infantry2.quantity * 5 +
-        user.infantryDivision.infantry3.quantity * 5 +
-        user.infantryDivision.infantry4.quantity * 5;
+        user.infantryDivision.infantry1.quantity * defencep.infantry1 +
+        user.infantryDivision.infantry2.quantity * defencep.infantry2 +
+        user.infantryDivision.infantry3.quantity * defencep.infantry3 +
+        user.infantryDivision.infantry4.quantity * defencep.infantry4;
 
       ////
       user.airDivision.attackPts =
-        user.airDivision.air1.quantity * 10 +
-        user.airDivision.air2.quantity * 10 +
-        user.airDivision.air3.quantity * 10 +
-        user.airDivision.air4.quantity * 10;
+        user.airDivision.air1.quantity * attackp.air1 +
+        user.airDivision.air2.quantity * attackp.air2 +
+        user.airDivision.air3.quantity * attackp.air3 +
+        user.airDivision.air4.quantity * attackp.air4;
       user.airDivision.defencePts =
-        user.airDivision.air1.quantity * 5 +
-        user.airDivision.air2.quantity * 5 +
-        user.airDivision.air3.quantity * 5 +
-        user.airDivision.air4.quantity * 5;
+        user.airDivision.air1.quantity * defencep.air1 +
+        user.airDivision.air2.quantity * defencep.air2 +
+        user.airDivision.air3.quantity * defencep.air3 +
+        user.airDivision.air4.quantity * defencep.air4;
 
       ///
       user.seaDivision.attackPts =
-        user.seaDivision.sea1.quantity * 10 +
-        user.seaDivision.sea2.quantity * 10 +
-        user.seaDivision.sea3.quantity * 10 +
-        user.seaDivision.sea4.quantity * 10;
+        user.seaDivision.sea1.quantity * attackp.sea1 +
+        user.seaDivision.sea2.quantity * attackp.sea2 +
+        user.seaDivision.sea3.quantity * attackp.sea3 +
+        user.seaDivision.sea4.quantity * attackp.sea4;
       user.seaDivision.defencePts =
-        user.seaDivision.sea1.quantity * 5 +
-        user.seaDivision.sea2.quantity * 5 +
-        user.seaDivision.sea3.quantity * 5 +
-        user.seaDivision.sea4.quantity * 5;
+        user.seaDivision.sea1.quantity * defencep.sea1 +
+        user.seaDivision.sea2.quantity * defencep.sea2 +
+        user.seaDivision.sea3.quantity * defencep.sea3 +
+        user.seaDivision.sea4.quantity * defencep.sea4;
 
       user.networth =
         1000 +
+        user.buildings.homes * 100 +
+        user.buildings.moneyGenerator * 100 +
         user.buildings.intelligenceCamp.quantity * 100 +
         user.buildings.infantryCamp.quantity * 100 +
         user.buildings.airField.quantity * 100 +
@@ -274,7 +307,7 @@ const attack = async (actionData) => {
         type: 'Attack',
         from: actionData.target,
         result: 'Success',
-        description: 'Gained ' + landTaken + '.',
+        description: 'Gained ' + landTaken + ' land.',
         date: DateTime.local()
           .setZone(dateSetting.timezone)
           .setLocale(dateSetting.locale)
@@ -351,40 +384,42 @@ const attack = async (actionData) => {
         }
       }
       user.infantryDivision.attackPts =
-        user.infantryDivision.infantry1.quantity * 10 +
-        user.infantryDivision.infantry2.quantity * 20 +
-        user.infantryDivision.infantry3.quantity * 30 +
-        user.infantryDivision.infantry4.quantity * 40;
+        user.infantryDivision.infantry1.quantity * attackp.infantry1 +
+        user.infantryDivision.infantry2.quantity * attackp.infantry2 +
+        user.infantryDivision.infantry3.quantity * attackp.infantry3 +
+        user.infantryDivision.infantry4.quantity * attackp.infantry4;
       user.infantryDivision.defencePts =
-        user.infantryDivision.infantry1.quantity * 5 +
-        user.infantryDivision.infantry2.quantity * 5 +
-        user.infantryDivision.infantry3.quantity * 5 +
-        user.infantryDivision.infantry4.quantity * 5;
+        user.infantryDivision.infantry1.quantity * defencep.infantry1 +
+        user.infantryDivision.infantry2.quantity * defencep.infantry2 +
+        user.infantryDivision.infantry3.quantity * defencep.infantry3 +
+        user.infantryDivision.infantry4.quantity * defencep.infantry4;
       //
       user.airDivision.attackPts =
-        user.airDivision.air1.quantity * 10 +
-        user.airDivision.air2.quantity * 20 +
-        user.airDivision.air3.quantity * 30 +
-        user.airDivision.air4.quantity * 40;
+        user.airDivision.air1.quantity * attackp.air1 +
+        user.airDivision.air2.quantity * attackp.air2 +
+        user.airDivision.air3.quantity * attackp.air3 +
+        user.airDivision.air4.quantity * attackp.air4;
       user.airDivision.defencePts =
-        user.airDivision.air1.quantity * 5 +
-        user.airDivision.air2.quantity * 5 +
-        user.airDivision.air3.quantity * 5 +
-        user.airDivision.air4.quantity * 5;
+        user.airDivision.air1.quantity * defencep.air1 +
+        user.airDivision.air2.quantity * defencep.air2 +
+        user.airDivision.air3.quantity * defencep.air3 +
+        user.airDivision.air4.quantity * defencep.air4;
       //
       user.seaDivision.attackPts =
-        user.seaDivision.sea1.quantity * 10 +
-        user.seaDivision.sea2.quantity * 20 +
-        user.seaDivision.sea3.quantity * 30 +
-        user.seaDivision.sea4.quantity * 40;
+        user.seaDivision.sea1.quantity * attackp.sea1 +
+        user.seaDivision.sea2.quantity * attackp.sea2 +
+        user.seaDivision.sea3.quantity * attackp.sea3 +
+        user.seaDivision.sea4.quantity * attackp.sea4;
       user.seaDivision.defencePts =
-        user.seaDivision.sea1.quantity * 5 +
-        user.seaDivision.sea2.quantity * 5 +
-        user.seaDivision.sea3.quantity * 5 +
-        user.seaDivision.sea4.quantity * 5;
+        user.seaDivision.sea1.quantity * defencep.sea1 +
+        user.seaDivision.sea2.quantity * defencep.sea2 +
+        user.seaDivision.sea3.quantity * defencep.sea3 +
+        user.seaDivision.sea4.quantity * defencep.sea4;
 
       user.networth =
         1000 +
+        user.buildings.homes * 100 +
+        user.buidlings.moneyGenerator * 100 +
         user.buildings.intelligenceCamp.quantity * 100 +
         user.buildings.infantryCamp.quantity * 100 +
         user.buildings.airField.quantity * 100 +
@@ -453,40 +488,42 @@ const attack = async (actionData) => {
         target.seaDivision.sea4.quantity * 0.99
       );
       target.infantryDivision.attackPts =
-        target.infantryDivision.infantry1.quantity * 10 +
-        target.infantryDivision.infantry2.quantity * 20 +
-        target.infantryDivision.infantry3.quantity * 30 +
-        target.infantryDivision.infantry4.quantity * 40;
+        target.infantryDivision.infantry1.quantity * attackp.infantry1 +
+        target.infantryDivision.infantry2.quantity * attackp.infantry2 +
+        target.infantryDivision.infantry3.quantity * attackp.infantry3 +
+        target.infantryDivision.infantry4.quantity * attackp.infantry4;
       target.infantryDivision.defencePts =
-        target.infantryDivision.infantry1.quantity * 5 +
-        target.infantryDivision.infantry2.quantity * 5 +
-        target.infantryDivision.infantry3.quantity * 5 +
-        target.infantryDivision.infantry4.quantity * 5;
+        target.infantryDivision.infantry1.quantity * defencep.infantry1 +
+        target.infantryDivision.infantry2.quantity * defencep.infantry2 +
+        target.infantryDivision.infantry3.quantity * defencep.infantry3 +
+        target.infantryDivision.infantry4.quantity * defencep.infantry4;
       //
       target.airDivision.attackPts =
-        target.airDivision.air1.quantity * 10 +
-        target.airDivision.air2.quantity * 20 +
-        target.airDivision.air3.quantity * 30 +
-        target.airDivision.air4.quantity * 40;
+        target.airDivision.air1.quantity * attackp.air1 +
+        target.airDivision.air2.quantity * attackp.air2 +
+        target.airDivision.air3.quantity * attackp.air3 +
+        target.airDivision.air4.quantity * attackp.air4;
       target.airDivision.defencePts =
-        target.airDivision.air1.quantity * 5 +
-        target.airDivision.air2.quantity * 5 +
-        target.airDivision.air3.quantity * 5 +
-        target.airDivision.air4.quantity * 5;
+        target.airDivision.air1.quantity * defencep.air1 +
+        target.airDivision.air2.quantity * defencep.air2 +
+        target.airDivision.air3.quantity * defencep.air3 +
+        target.airDivision.air4.quantity * defencep.air4;
       //
       target.seaDivision.attackPts =
-        target.seaDivision.sea1.quantity * 10 +
-        target.seaDivision.sea2.quantity * 20 +
-        target.seaDivision.sea3.quantity * 30 +
-        target.seaDivision.sea4.quantity * 40;
+        target.seaDivision.sea1.quantity * attackp.sea1 +
+        target.seaDivision.sea2.quantity * attackp.sea2 +
+        target.seaDivision.sea3.quantity * attackp.sea3 +
+        target.seaDivision.sea4.quantity * attackp.sea3;
       target.seaDivision.defencePts =
-        target.seaDivision.sea1.quantity * 5 +
-        target.seaDivision.sea2.quantity * 5 +
-        target.seaDivision.sea3.quantity * 5 +
-        target.seaDivision.sea4.quantity * 5;
+        target.seaDivision.sea1.quantity * defencep.sea1 +
+        target.seaDivision.sea2.quantity * defencep.sea2 +
+        target.seaDivision.sea3.quantity * defencep.sea3 +
+        target.seaDivision.sea4.quantity * defencep.sea4;
 
       target.networth =
         1000 +
+        target.buildings.homes * 100 +
+        target.buildings.moneyGenerator * 100 +
         target.buildings.intelligenceCamp.quantity * 100 +
         target.buildings.infantryCamp.quantity * 100 +
         target.buildings.airField.quantity * 100 +
@@ -519,7 +556,7 @@ const attack = async (actionData) => {
     }
     await user.save();
     await target.save();
-    //await ActionsQueue.findByIdAndDelete(actionData._id);
+    await ActionsQueue.findByIdAndDelete(actionData._id);
   } catch (err) {
     return err;
   }

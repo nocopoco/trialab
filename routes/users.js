@@ -17,7 +17,7 @@ router.get('/getusers', async (req, res) => {
     const users = await UserModel.find(
       null,
       '_id name networth school country'
-    );
+    ).sort({ networth: -1 });
     res.json(users);
   } catch (err) {
     res.status(500).json({ msg: err });

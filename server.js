@@ -17,7 +17,7 @@ app.use(cookieParser());
 //Connect to mongoDB ATLAS
 const connectDB = async () => {
   try {
-    await mongoose.connect(config.get('connection'), {
+    await mongoose.connect(process.env.CONNECTION, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

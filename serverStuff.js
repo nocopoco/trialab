@@ -1,12 +1,15 @@
 const express = require('express');
 const serverTicker = require('./models/ServerTickModel');
 const actionQueue = require('./models/ActionsQueue');
+const UserModel = require('./models/UserModel');
 const { DateTime } = require('luxon');
 const { explore } = require('./actions/exploration');
 const { build } = require('./actions/building');
 const { military } = require('./actions/military');
 const { attack } = require('./actions/attack');
 const { intel } = require('./actions/intel');
+const { sabotage } = require('./actions/sabotage');
+const { usualIncrements } = require('./actions/usualIncrements');
 
 //const router = express.Router();
 
@@ -60,7 +63,13 @@ const plusServerTicker = async () => {
         if (getQueue[i].type === 'intel') {
           await intel(getQueue[i]);
         }
+        if (getQueue[i].type === 'sabotage') {
+          await sabotage(getQueue[i]);
+        }
       }
+
+      await usualIncrements();
+
       console.log('[Tick complete] Current Server Ticker: ', incServerTicker);
     }
   } catch (err) {
@@ -73,7 +82,7 @@ const getTime = () => {
     .setLocale('en-US')
     .toFormat('m');
 
-  if (now === '30' || now === '27') {
+  if (now === '30' || now === '0') {
     plusServerTicker();
   }
   //0 > x < 60
