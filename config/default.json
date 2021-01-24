@@ -1,4 +1,0 @@
-{
-  "connection": "mongodb+srv://Nicholas:314314BnB.@cluster0.o2bqa.mongodb.net/Cluster0?retryWrites=true&w=majority",
-  "secretToken": "mytoken"
-}
