@@ -1,5 +1,6 @@
 const express = require('express');
 const UserModel = require('../models/UserModel');
+const Feedback = require('../models/FeedbackModel');
 const checkToken = require('../checkToken');
 const { DateTime } = require('luxon');
 
@@ -153,6 +154,27 @@ router.post('/pushprofiledata', checkToken, async (req, res) => {
     await yourProfile.save();
     res.json(yourProfile);
   } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
+router.post('/feedback', checkToken, async (req, res) => {
+  try {
+    const fdbck = new Feedback();
+    /*date: DateTime.local()
+        .setZone(dateSetting.timezone)
+        .setLocale(dateSetting.locale)
+        .toFormat(dateSetting.format), */
+    fdbck.user = req.id;
+    fdbck.feedback = req.body.feedback;
+    fdbck.date = DateTime.local()
+      .setZone(dateSetting.timezone)
+      .setLocale(dateSetting.locale)
+      .toFormat(dateSetting.format);
+    await fdbck.save();
+    res.json(fdbck);
+  } catch (err) {
+    console.log('error');
     res.status(500).json({ msg: err });
   }
 });
